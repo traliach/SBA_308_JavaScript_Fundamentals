@@ -16,6 +16,18 @@ function toValidDate(dateString) {
   return d;
 }
 
+function validateInputs(course, ag, submissions) {
+  if (!course || !ag || !submissions) {
+    throw new Error("Missing required inputs.");
+  }
+
+  if (ag.course_id !== course.id) {
+    throw new Error("Invalid input: course_id does not match course.id");
+  } else {
+    // keep going
+  }
+}
+
 // The provided course information.
 const CourseInfo = {
   id: 451,
@@ -96,6 +108,7 @@ const LearnerSubmissions = [
 
 function getLearnerData(course, ag, submissions) {
   // Step 2 stub: we’ll implement the real logic incrementally.
+  validateInputs(course, ag, submissions);
   return [];
 }
 
