@@ -10,6 +10,12 @@ function round3(num) {
   return Number(Number(num).toFixed(3));
 }
 
+function toValidDate(dateString) {
+  const d = new Date(dateString);
+  if (Number.isNaN(d.getTime())) return null;
+  return d;
+}
+
 // The provided course information.
 const CourseInfo = {
   id: 451,
