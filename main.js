@@ -1,5 +1,11 @@
 // SBA 308: JavaScript Fundamentals (sandbox starter data)
 
+// Toggle extra console warnings without changing the required final output.
+const DEBUG = false;
+function debugWarn(message) {
+  if (DEBUG) console.warn(message);
+}
+
 // The provided course information.
 const CourseInfo = {
   id: 451,
