@@ -1,7 +1,7 @@
 // SBA 308: JavaScript Fundamentals (sandbox starter data)
 
 // extra console warnings without changing the required final output.
-const DEBUG = true;
+const DEBUG = false;
 function debugWarn(message) {
   if (DEBUG) console.warn(message);
 }
@@ -37,7 +37,7 @@ function validateInputs(course, ag, submissions) {
   }
 
   if (ag.course_id !== course.id) {
-    throw new Error("Invalid input: course_id does not match course.id");
+    throw new Error("AssignmentGroup.course_id does not match CourseInfo.id");
   } else {
     // keep going
   }
