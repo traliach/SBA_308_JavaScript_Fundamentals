@@ -1,10 +1,12 @@
 // SBA 308: JavaScript Fundamentals (sandbox starter data)
 
 // extra console warnings without changing the required final output.
-const DEBUG = false;
+const DEBUG = true;
 function debugWarn(message) {
   if (DEBUG) console.warn(message);
 }
+
+const LATE_PENALTY_RATE = 0.1;
 
 function round3(num) {
   return Number(Number(num).toFixed(3));
@@ -14,6 +16,19 @@ function toValidDate(dateString) {
   const d = new Date(dateString);
   if (Number.isNaN(d.getTime())) return null;
   return d;
+}
+
+function applyLatePenalty(score, pointsPossible, submittedAt, dueAt) {
+  let adjusted = score;
+
+  if (submittedAt > dueAt) {
+    adjusted = score - pointsPossible * LATE_PENALTY_RATE;
+    if (adjusted < 0) adjusted = 0;
+  } else {
+    adjusted = score;
+  }
+
+  return adjusted;
 }
 
 function validateInputs(course, ag, submissions) {
@@ -134,6 +149,15 @@ function getLearnerData(course, ag, submissions) {
   const now = new Date();
   const dueAssignments = buildDueAssignmentLookup(ag, now);
   debugWarn(`Due assignments: ${Object.keys(dueAssignments).length}`);
+
+  // DEBUG checkpoint: confirm late penalty math using the sample late submission.
+  if (DEBUG) {
+    const dueAt = toValidDate("2023-02-27");
+    const submittedAt = toValidDate("2023-03-07");
+    const adjusted = applyLatePenalty(140, 150, submittedAt, dueAt); // should be 125
+    debugWarn(`Late penalty check (140/150 late) => adjusted score: ${adjusted}`);
+  }
+
   return [];
 }
 
