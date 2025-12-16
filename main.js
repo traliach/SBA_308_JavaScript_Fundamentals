@@ -59,6 +59,9 @@ function buildDueAssignmentLookup(ag, now) {
 
     if (dueAt > now) {
       delete lookup[assignment.id];
+    } else {
+      // Store normalized fields for later calculations.
+      lookup[assignment.id] = { ...assignment, due_at: dueAt, points_possible: possible };
     }
   }
 
@@ -172,7 +175,6 @@ const LearnerSubmissions = [
 ];
 
 function getLearnerData(course, ag, submissions) {
-  // Step 2 stub: we’ll implement the real logic incrementally.
   validateInputs(course, ag, submissions);
   const now = new Date();
   const dueAssignments = buildDueAssignmentLookup(ag, now);
@@ -194,7 +196,40 @@ function getLearnerData(course, ag, submissions) {
     }
   }
 
-  return [];
+  const learnerIds = Array.from(submissionsByLearner.keys()).sort((a, b) => a - b);
+  const result = [];
+
+  for (let i = 0; i < learnerIds.length; i++) {
+    const learnerId = learnerIds[i];
+    const learnerSubs = submissionsByLearner.get(learnerId);
+
+    const learnerResult = { id: learnerId };
+    let totalEarned = 0;
+    let totalPossible = 0;
+
+    for (const sub of learnerSubs) {
+      const assignment = dueAssignments[sub.assignmentId];
+      if (!assignment) continue;
+
+      const possible = assignment.points_possible;
+      const adjusted = applyLatePenalty(sub.score, possible, sub.submittedAt, assignment.due_at);
+      const pct = adjusted / possible;
+
+      learnerResult[sub.assignmentId] = round3(pct);
+      totalEarned += adjusted;
+      totalPossible += possible;
+    }
+
+    learnerResult.avg = totalPossible > 0 ? round3(totalEarned / totalPossible) : 0;
+
+    if (DEBUG) {
+      debugWarn(`Result for learner ${learnerId}: ${JSON.stringify(learnerResult)}`);
+    }
+
+    result.push(learnerResult);
+  }
+
+  return result;
 }
 
 let result = [];
