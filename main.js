@@ -65,6 +65,34 @@ function buildDueAssignmentLookup(ag, now) {
   return lookup;
 }
 
+function groupValidSubmissionsByLearner(submissions, dueAssignments) {
+  const byLearner = new Map();
+
+  for (const record of submissions) {
+    if (!record || !record.submission) {
+      debugWarn("Skipping bad submission record");
+      continue;
+    }
+
+    const learnerId = Number(record.learner_id);
+    const assignmentId = Number(record.assignment_id);
+    const score = Number(record.submission.score);
+    const submittedAt = toValidDate(record.submission.submitted_at);
+
+    // Ignore submissions for assignments that are not due (rubric: continue).
+    if (!dueAssignments[assignmentId]) continue;
+
+    if (!Number.isFinite(learnerId) || !Number.isFinite(assignmentId)) continue;
+    if (!Number.isFinite(score)) continue;
+    if (!submittedAt) continue;
+
+    if (!byLearner.has(learnerId)) byLearner.set(learnerId, []);
+    byLearner.get(learnerId).push({ assignmentId, score, submittedAt });
+  }
+
+  return byLearner;
+}
+
 // The provided course information.
 const CourseInfo = {
   id: 451,
@@ -156,6 +184,14 @@ function getLearnerData(course, ag, submissions) {
     const submittedAt = toValidDate("2023-03-07");
     const adjusted = applyLatePenalty(140, 150, submittedAt, dueAt); // should be 125
     debugWarn(`Late penalty check (140/150 late) => adjusted score: ${adjusted}`);
+  }
+
+  const submissionsByLearner = groupValidSubmissionsByLearner(submissions, dueAssignments);
+  if (DEBUG) {
+    debugWarn(`Learners with due submissions: ${submissionsByLearner.size}`);
+    for (const [learnerId, subs] of submissionsByLearner) {
+      debugWarn(`Learner ${learnerId} due submissions: ${subs.length}`);
+    }
   }
 
   return [];
