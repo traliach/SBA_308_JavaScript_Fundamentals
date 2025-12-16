@@ -44,3 +44,12 @@ Final output (DEBUG=false):
   { "1": 0.78, "2": 0.833, id: 132, avg: 0.82 }
 ]
 
+
+## References
+
+- try/catch: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/try...catch
+- throw: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/throw
+- Date_new date: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date
+- Date.getTime(): https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/getTime
+- Number.isFinite(): https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/isFinite
+- Number.prototype.toFixed(): https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/toFixed
