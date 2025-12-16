@@ -1,9 +1,13 @@
 // SBA 308: JavaScript Fundamentals (sandbox starter data)
 
-// Toggle extra console warnings without changing the required final output.
+// extra console warnings without changing the required final output.
 const DEBUG = false;
 function debugWarn(message) {
   if (DEBUG) console.warn(message);
+}
+
+function round3(num) {
+  return Number(Number(num).toFixed(3));
 }
 
 // The provided course information.
