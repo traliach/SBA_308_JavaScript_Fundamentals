@@ -28,6 +28,28 @@ function validateInputs(course, ag, submissions) {
   }
 }
 
+function buildDueAssignmentLookup(ag, now) {
+  const lookup = {};
+
+  for (const assignment of ag.assignments) {
+    lookup[assignment.id] = assignment;
+
+    const dueAt = toValidDate(assignment.due_at);
+    const possible = Number(assignment.points_possible);
+
+    if (!dueAt || !Number.isFinite(possible) || possible <= 0) {
+      delete lookup[assignment.id];
+      continue;
+    }
+
+    if (dueAt > now) {
+      delete lookup[assignment.id];
+    }
+  }
+
+  return lookup;
+}
+
 // The provided course information.
 const CourseInfo = {
   id: 451,
@@ -109,6 +131,9 @@ const LearnerSubmissions = [
 function getLearnerData(course, ag, submissions) {
   // Step 2 stub: we’ll implement the real logic incrementally.
   validateInputs(course, ag, submissions);
+  const now = new Date();
+  const dueAssignments = buildDueAssignmentLookup(ag, now);
+  debugWarn(`Due assignments: ${Object.keys(dueAssignments).length}`);
   return [];
 }
 
